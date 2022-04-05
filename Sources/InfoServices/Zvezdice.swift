@@ -7,7 +7,7 @@
 
 import Foundation
 import CryptoSwift
-import OONetworking
+import Networking
 
 public struct Aster {
 
