@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "CryptoSwift",
+        "repositoryURL": "https://github.com/krzyzanowskim/CryptoSwift.git",
+        "state": {
+          "branch": null,
+          "revision": "12f2389aca4a07e0dd54c86ec23d0721ed88b8db",
+          "version": "1.4.3"
+        }
+      },
+      {
+        "package": "Networking",
+        "repositoryURL": "https://github.com/m3lody992/Networking",
+        "state": {
+          "branch": null,
+          "revision": "600e7a089f744538510eccfc0f8a5f49553ea541",
+          "version": "1.0.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
