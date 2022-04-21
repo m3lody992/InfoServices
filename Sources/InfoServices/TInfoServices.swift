@@ -36,7 +36,7 @@ public struct TInfoServices {
         shared.cn
     }
 
-    public static func configure(udService: UDInterface, kcService: KCInterface, keys: PersistenceKeys, byteKeys: ByteProtocol, serviceKeys: ServiceKeys, getZvezdeService: GetZvezdeProtocol, cn: String) {
+    public static func configure(udService: UDInterface, kcService: KCInterface, keys: PersistenceKeys, getZvezdeService: GetZvezdeProtocol, cn: String) {
         shared.udService = udService
         shared.kcService = kcService
         shared.keys = keys
