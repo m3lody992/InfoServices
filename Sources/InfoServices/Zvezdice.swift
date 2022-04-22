@@ -14,27 +14,27 @@ public struct Aster {
     static public var numberOfAsters: Int {
         get {
             resetAstersIfNeeded()
-            return InfoServices.udService.object(forKey: InfoServices.keys.udAsterKey) ?? 0
+            return TInfoServices.udService.object(forKey: TInfoServices.keys.udAsterKey) ?? 0
         }
         set {
             resetAstersIfNeeded()
-            InfoServices.kcService.set(value: newValue < 0 ? 0 : newValue, for: InfoServices.keys.kcAsterKey)
-            InfoServices.udService.set(newValue < 0 ? 0 : newValue, forKey: InfoServices.keys.udAsterKey)
+            TInfoServices.kcService.set(value: newValue < 0 ? 0 : newValue, for: TInfoServices.keys.kcAsterKey)
+            TInfoServices.udService.set(newValue < 0 ? 0 : newValue, forKey: TInfoServices.keys.udAsterKey)
             updateSignatureForAsters()
         }
     }
 
     public static func matchAsters() {
-        let udAsters = InfoServices.udService.object(forKey: InfoServices.keys.udAsterKey) ?? 0
-        let kcAsters = InfoServices.kcService.value(for: InfoServices.keys.kcAsterKey) ?? 0
+        let udAsters = TInfoServices.udService.object(forKey: TInfoServices.keys.udAsterKey) ?? 0
+        let kcAsters = TInfoServices.kcService.value(for: TInfoServices.keys.kcAsterKey) ?? 0
         if udAsters == 0, kcAsters > 0 {
             Aster.numberOfAsters = kcAsters
         }
     }
 
     public static func resetAsters() {
-        InfoServices.kcService.remove(key: InfoServices.keys.kcAsterKey)
-        InfoServices.udService.deleteValue(forKey: InfoServices.keys.udAsterKey)
+        TInfoServices.kcService.remove(key: TInfoServices.keys.kcAsterKey)
+        TInfoServices.udService.deleteValue(forKey: TInfoServices.keys.udAsterKey)
         updateSignatureForAsters()
     }
 
@@ -49,7 +49,7 @@ public struct Aster {
 public extension Aster {
 
     static func sync(completion: @escaping (Int?) -> Void) {
-        InfoServices.getZvezdeService.getZvezde { (result: Result<AsterSeira, NetworkingError>) in
+        TInfoServices.getZvezdeService.getZvezde { (result: Result<AsterSeira, NetworkingError>) in
             if case .success(let seira) = result {
                 if self.isSeiraSignatureValid(seira) {
                     guard let asters = Int(seira.rank) else {
@@ -79,7 +79,7 @@ public extension Aster {
     }
 
     static func isSeiraSignatureValid(_ seira: AsterSeira) -> Bool {
-        guard let hmacBytes = try? HMAC(key: InfoServices.keys.hamburgerMac,
+        guard let hmacBytes = try? HMAC(key: TInfoServices.keys.hamburgerMac,
                                         variant: .sha2(.sha256)).authenticate("\(seira.rank)|\(seira.nonce)".asUInt8Array) else {
                 return false
         }
@@ -91,13 +91,13 @@ public extension Aster {
 public extension Aster {
 
     static func isSignatureValid() -> Bool {
-        let asters: Int = InfoServices.udService.object(forKey: InfoServices.keys.udAsterKey) ?? 0
+        let asters: Int = TInfoServices.udService.object(forKey: TInfoServices.keys.udAsterKey) ?? 0
         let updatedSignature = updateSignatureForAsters()
 
-        let storedSignature: [UInt8]? = InfoServices.udService.object(forKey: InfoServices.keys.udSignatureKey) ?? updatedSignature
-        let storedKcSignature: [UInt8]? = InfoServices.kcService.value(for: InfoServices.keys.kcSignatureKey) ?? updatedSignature
+        let storedSignature: [UInt8]? = TInfoServices.udService.object(forKey: TInfoServices.keys.udSignatureKey) ?? updatedSignature
+        let storedKcSignature: [UInt8]? = TInfoServices.kcService.value(for: TInfoServices.keys.kcSignatureKey) ?? updatedSignature
         
-        let astersSignature = try? HMAC(key: InfoServices.keys.key, variant: .sha2(.sha256)).authenticate("\(asters)".asUInt8Array)
+        let astersSignature = try? HMAC(key: TInfoServices.keys.key, variant: .sha2(.sha256)).authenticate("\(asters)".asUInt8Array)
 
         if astersSignature == storedSignature {
             return true
@@ -107,10 +107,10 @@ public extension Aster {
     }
 
     @discardableResult static func updateSignatureForAsters() -> [UInt8]? {
-        let asters = InfoServices.udService.object(forKey: InfoServices.keys.udAsterKey) ?? 0
-        let astersSignature = try? HMAC(key: InfoServices.keys.key, variant: .sha2(.sha256)).authenticate("\(asters)".asUInt8Array)
-        InfoServices.udService.set(astersSignature, forKey: InfoServices.keys.udSignatureKey)
-        InfoServices.kcService.set(value: astersSignature, for: InfoServices.keys.kcSignatureKey)
+        let asters = TInfoServices.udService.object(forKey: TInfoServices.keys.udAsterKey) ?? 0
+        let astersSignature = try? HMAC(key: TInfoServices.keys.key, variant: .sha2(.sha256)).authenticate("\(asters)".asUInt8Array)
+        TInfoServices.udService.set(astersSignature, forKey: TInfoServices.keys.udSignatureKey)
+        TInfoServices.kcService.set(value: astersSignature, for: TInfoServices.keys.kcSignatureKey)
         return astersSignature
     }
 
