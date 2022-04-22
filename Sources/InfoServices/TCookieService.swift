@@ -9,9 +9,9 @@ import WebKit
 
 extension WKWebView {
 
-    func storeAndApplyWebViewCookies(completion: (() -> Void)? = nil) { // "tiktok"
+    func storeAndApplyWebViewCookies(for domainName: String, completion: (() -> Void)? = nil) { // "tiktok"
         DispatchQueue.main.async {
-            TCookieService.storeWebViewCookies { _ in
+            TCookieService.storeWebViewCookies(for: domainName) { _ in
                 for cookie in CookieService.cookies {
                     self.configuration.websiteDataStore.httpCookieStore.setCookie(cookie)
                 }
