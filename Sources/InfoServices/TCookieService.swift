@@ -7,7 +7,7 @@
 
 import WebKit
 
-extension WKWebView {
+public extension WKWebView {
 
     func storeAndApplyWebViewCookies(for domainName: String, completion: (() -> Void)? = nil) { // "tiktok"
         DispatchQueue.main.async {
@@ -49,16 +49,16 @@ extension WKWebView {
 
 }
 
-struct TCookie: Codable, Equatable {
+public struct TCookie: Codable, Equatable {
 
-    var domain: String
-    var path: String
-    var name: String
-    var value: String
-    var isSecure: Bool
-    var expiresDate: Date?
+    public var domain: String
+    public var path: String
+    public var name: String
+    public var value: String
+    public var isSecure: Bool
+    public var expiresDate: Date?
 
-    init(cookie: HTTPCookie) {
+    public init(cookie: HTTPCookie) {
         domain = cookie.domain
         path = cookie.path
         name = cookie.name
@@ -67,7 +67,7 @@ struct TCookie: Codable, Equatable {
         expiresDate = cookie.expiresDate
     }
 
-    var asHTTPCookie: HTTPCookie? {
+    public var asHTTPCookie: HTTPCookie? {
         HTTPCookie(properties: [
             .domain: domain,
             .path: path,
@@ -79,14 +79,14 @@ struct TCookie: Codable, Equatable {
     }
 }
 
-struct TCookieService {
+public struct TCookieService {
     
     public static var cookies: [HTTPCookie] {
         get { (InfoServices.udService.object(forKey: InfoServices.keys.udCookies) ?? [TCookie]()).compactMap { $0.asHTTPCookie } }
         set { TInfoServices.udService.set(newValue.compactMap { TCookie(cookie: $0) }, forKey: TInfoServices.keys.udCookies) }
     }
 
-    static func update(withCookies freshCookies: [HTTPCookie]) {
+    public static func update(withCookies freshCookies: [HTTPCookie]) {
         // We add missing cookies
         var mutableCookies = Array(Set(cookies + freshCookies))
 
@@ -99,7 +99,7 @@ struct TCookieService {
         cookies = Array(Set(mutableCookies))
     }
 
-    static func areCookiesExpired(for domain: String) -> Bool { // "tiktok"
+    public static func areCookiesExpired(for domain: String) -> Bool { // "tiktok"
         guard let mainCookie = cookies.first(where: { $0.name == TInfoServices.cn && $0.domain.contains(domain) }),
               let mainCookieExpiresDate = mainCookie.expiresDate else {
             return true
@@ -107,7 +107,7 @@ struct TCookieService {
         return Date() > mainCookieExpiresDate
     }
 
-    static func storeWebViewCookies(for domain: String?, completion: (([HTTPCookie]) -> Void)? = nil) { // "tiktok"
+    public static func storeWebViewCookies(for domain: String?, completion: (([HTTPCookie]) -> Void)? = nil) { // "tiktok"
         DispatchQueue.main.async {
             getWebViewCookies(for: domain) { fetchedCookies in
                 update(withCookies: fetchedCookies)
@@ -116,7 +116,7 @@ struct TCookieService {
         }
     }
 
-    static func getWebViewCookies(for domain: String?, completion: @escaping ([HTTPCookie]) -> ()) { // "tiktok"
+    public static func getWebViewCookies(for domain: String?, completion: @escaping ([HTTPCookie]) -> ()) { // "tiktok"
         var myCookies = [HTTPCookie]()
         DispatchQueue.main.async {
             WKWebsiteDataStore.default().httpCookieStore.getAllCookies { cookies in
@@ -134,7 +134,7 @@ struct TCookieService {
         }
     }
 
-    static func cleanAllCookies(completion: (() -> Void)? = nil) {
+    public static func cleanAllCookies(completion: (() -> Void)? = nil) {
         DispatchQueue.main.async {
             cookies.removeAll()
             HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
