@@ -82,7 +82,7 @@ public struct TCookie: Codable, Equatable {
 public struct TCookieService {
     
     public static var cookies: [HTTPCookie] {
-        get { (TInfoServices.udService.object(forKey: InfoServices.keys.udCookies) ?? [TCookie]()).compactMap { $0.asHTTPCookie } }
+        get { (TInfoServices.udService.object(forKey: TInfoServices.keys.udCookies) ?? [TCookie]()).compactMap { $0.asHTTPCookie } }
         set { TInfoServices.udService.set(newValue.compactMap { TCookie(cookie: $0) }, forKey: TInfoServices.keys.udCookies) }
     }
 
