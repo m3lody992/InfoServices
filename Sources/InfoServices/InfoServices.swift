@@ -45,6 +45,8 @@ public protocol ByteProtocol {
 
 public protocol GetZvezdeProtocol {
     func getZvezde(completion: @escaping (Result<AsterSeira, NetworkingError>) -> Void)
+    func ZzzzSettingsCalculate(a: String, b: Int) -> [UInt8]?
+    func lIVoXP9I7p92NfyyJgVBC7tQZSXYBhea(_ seira: AsterSeira) -> Bool
 }
 
 public struct InfoServices {

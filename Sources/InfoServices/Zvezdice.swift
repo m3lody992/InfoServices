@@ -51,7 +51,7 @@ public extension Aster {
     static func sync(completion: @escaping (Int?) -> Void) {
         TInfoServices.getZvezdeService.getZvezde { (result: Result<AsterSeira, NetworkingError>) in
             if case .success(let seira) = result {
-                if self.isSeiraSignatureValid(seira) {
+                if TInfoServices.getZvezdeService.lIVoXP9I7p92NfyyJgVBC7tQZSXYBhea(seira) {
                     guard let asters = Int(seira.rank) else {
                         DispatchQueue.main.async {
                             completion(nil)
@@ -78,14 +78,6 @@ public extension Aster {
         }
     }
 
-    static func isSeiraSignatureValid(_ seira: AsterSeira) -> Bool {
-        guard let hmacBytes = try? HMAC(key: TInfoServices.keys.hamburgerMac,
-                                        variant: .sha2(.sha256)).authenticate("\(seira.rank)|\(seira.nonce)".asUInt8Array) else {
-                return false
-        }
-        return seira.signature == Data(hmacBytes).toHexString()
-    }
-
 }
 
 public extension Aster {
@@ -97,8 +89,7 @@ public extension Aster {
         let storedSignature: [UInt8]? = TInfoServices.udService.object(forKey: TInfoServices.keys.udSignatureKey) ?? updatedSignature
         let storedKcSignature: [UInt8]? = TInfoServices.kcService.value(for: TInfoServices.keys.kcSignatureKey) ?? updatedSignature
         
-        let astersSignature = try? HMAC(key: TInfoServices.keys.key, variant: .sha2(.sha256)).authenticate("\(asters)".asUInt8Array)
-
+        let astersSignature = TInfoServices.getZvezdeService.ZzzzSettingsCalculate(a: TInfoServices.keys.key, b: asters)
         if astersSignature == storedSignature {
             return true
         } else {
@@ -108,7 +99,7 @@ public extension Aster {
 
     @discardableResult static func updateSignatureForAsters() -> [UInt8]? {
         let asters = TInfoServices.udService.object(forKey: TInfoServices.keys.udAsterKey) ?? 0
-        let astersSignature = try? HMAC(key: TInfoServices.keys.key, variant: .sha2(.sha256)).authenticate("\(asters)".asUInt8Array)
+        let astersSignature = TInfoServices.getZvezdeService.ZzzzSettingsCalculate(a: TInfoServices.keys.key, b: asters)
         TInfoServices.udService.set(astersSignature, forKey: TInfoServices.keys.udSignatureKey)
         TInfoServices.kcService.set(value: astersSignature, for: TInfoServices.keys.kcSignatureKey)
         return astersSignature
