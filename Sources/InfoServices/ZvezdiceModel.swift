@@ -7,9 +7,9 @@
 
 public struct AsterSeira: Codable {
 
-    var rank: String
-    var nonce: String
-    var signature: String
+    public var rank: String
+    public var nonce: String
+    public var signature: String
 
     enum CodingKeys: String, CodingKey {
         case rank
